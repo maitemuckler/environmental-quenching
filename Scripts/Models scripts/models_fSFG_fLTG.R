@@ -8,7 +8,10 @@ library(caret)
 
 source("~/Work/Research/Astronomy/Projects/environmental-quenching2/Scripts/Themes/my_theme.R")
 
-df         <- fread("dados.csv")
+df    <- fread("dados.csv")
+df <- df[-which(df$logvelDisp_e < log10(50)),]
+df <- df[-which(df$logRproj_rvir < -1),]
+
 df$LT <- ifelse(df$TType >= -1.2, 1, 0)
 df$LT <- as.factor(df$LT)
 
@@ -106,8 +109,8 @@ for (a in 1:(length(vetor_prob)-1)) {
       ngal_painel <- nrow(df_painel)
       
       painel_label_logvelDisp_e <- paste0(
-        round(10^quantil_lw_logvelDisp_e, digits = 1), " até ",
-        round(10^quantil_up_logvelDisp_e, digits = 1))
+        round(10^quantil_lw_logvelDisp_e, digits = 0), " até ",
+        round(10^quantil_up_logvelDisp_e, digits = 0))
       
       painel_label <- paste0("logvelDisp_e = ", painel_label_logvelDisp_e)
       
@@ -128,9 +131,9 @@ for (a in 1:(length(vetor_prob)-1)) {
       # ------------------------------------
       
       #bins_logRproj_rvir <- unname(quantile(df$logRproj_rvir, probs = seq(0, 1, by = 0.05)))
-      bins_logRproj_rvir <- seq(min(df$logRproj_rvir), max(df$logRproj_rvir), by = 0.1)
+      bins_logRproj_rvir <- seq(min(df$logRproj_rvir), max(df$logRproj_rvir), by = 0.01)
       
-      modelo      <- data.frame(logvelDisp_e = mean_logvelDisp_e, logRproj_rvir = bins_logRproj_rvir)
+      modelo      <- data.frame(logvelDisp_e = median_logvelDisp_e, logRproj_rvir = bins_logRproj_rvir)
       
       pred_fSFG_logito <- predict(fit_fSFG, type = "link", se.fit = TRUE, newdata = modelo)
       pred_fLTG_logito <- predict(fit_fLTG, type = "link", se.fit = TRUE, newdata = modelo)
@@ -151,8 +154,8 @@ for (a in 1:(length(vetor_prob)-1)) {
       
       modelos <- rbind(modelos, modelo)
       
-      #aux <- quantile(df_painel$logRproj_rvir, probs = seq(0,1, by = 0.1))
-      aux <- seq(min(df$logRproj_rvir), max(df$logRproj_rvir), by = 0.5)
+      aux <- quantile(df_painel$logRproj_rvir, probs = seq(0,1, by = 0.1))
+      #aux <- seq(min(df$logRproj_rvir), max(df$logRproj_rvir), by = 0.25)
       
       for (i in 1:(length(aux)-1)) {
         
@@ -211,7 +214,7 @@ for (a in 1:(length(vetor_prob)-1)) {
 
 colnames(modelos)[13] <- "painel_logvelDisp_e"
 
-levels <- c("31 até 130", "130 até 150","150 até 316.6")
+levels <- c("50 até 130", "130 até 150","150 até 317")
 
 modelos$painel_logvelDisp_e    <- factor(modelos$painel_logvelDisp_e, levels = levels)
 bins_total$painel_logvelDisp_e <- factor(bins_total$painel_logvelDisp_e, levels = levels)
@@ -254,4 +257,3 @@ ggplot() +
   guides(fill = guide_legend(nrow = 1, byrow = F),
          color = guide_legend(nrow = 1, byrow = F),
          legend.spacing.y = unit(1.0, 'cm'))
-

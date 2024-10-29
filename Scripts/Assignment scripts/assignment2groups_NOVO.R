@@ -9,9 +9,9 @@ absMag_lim      <- -12
 N_rvir          <-  20    
 Ngals_min_group <-  1      
 
-z_max <- 0.1
+z_max <- 0.03
 z_min <- 0.01 
-Mhalo_min_group <- 13
+Mhalo_min_group <- 12.3
 
 ### Definir quantidades cosmológicas ----
 DELTA <- 100
@@ -34,7 +34,7 @@ wdmain       <- "~/Work/Research/Astronomy/"
 wdproject    <- paste0(wdmain, "Projects/environmental-quenching/")
 wdcode       <- paste0(wdproject, "Scripts/")
 wddata       <- paste0(wdmain, "Data/")
-wdassigndata <- paste0(wddata, "Assignment2groups/")
+wdassigndata <- paste0(wddata, "environmental-quenching-data/Assignment2groups/")
 wdfigs       <- paste0(wdproject, "Figures/")
 
 ### Chamar funções ----

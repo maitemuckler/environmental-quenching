@@ -1,4 +1,4 @@
-setwd("~/Work/Research/Astronomy/Projects/environmental-quenching2/malditos_bins/")
+setwd("~/Work/Research/Astronomy/Projects/environmental-quenching/Scripts/Models scripts/")
 
 library(data.table)
 library(binom)
@@ -6,7 +6,7 @@ library(ggplot2)
 library(InformationValue)
 library(caret)
 
-source("~/Work/Research/Astronomy/Projects/environmental-quenching2/Scripts/Themes/my_theme.R")
+source("~/Work/Research/Astronomy/Projects/environmental-quenching/Scripts/Themes/my_theme.R")
 
 df    <- fread("dados.csv")
 df <- df[-which(df$logvelDisp_e < log10(50)),]

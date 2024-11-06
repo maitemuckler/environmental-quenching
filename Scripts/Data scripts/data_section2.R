@@ -4,11 +4,11 @@ library(dplyr)
 
 ## Diretórios ----
 wdcode <- "~/Work/Research/Astronomy/Projects/environmental-quenching/Scripts/"
-wddata <- "~/Work/Research/Astronomy/Data/"
+wddata <- "~/Work/Research/Astronomy/Data/environmental-quenching-data/"
 wdfigs <- "~/Work/Research/Astronomy/Projects/environmental-quenching/Figures/"
 
 ## Definir qual tabela assignment ----
-zmax    <- 0.03
+zmax    <- 0.07
 Rlim    <- 2.5
 Ma      <- 12.3
 
@@ -19,7 +19,7 @@ input_assing_file <- paste0("assignment2groups_zmax",zmax,"_Rlim",Rlim,"_Ma",Ma,
 output_file <- paste0("assign_zmax", zmax, "_Ma", Ma, "_", input_clean_file)
 
 ## Lendo os dados ----
-df_clean  <- fread(paste0(wddata, "environmental-quenching-data/", input_clean_file)) # 255.688 (328.020 - 255.688 = 72.332 excluídas)
+df_clean  <- fread(paste0(wddata, input_clean_file)) # 255.688 (328.020 - 255.688 = 72.332 excluídas)
 df_assign <- fread(paste0(wddata, "Assignment2groups/", input_assing_file))
 
 # Para zmax = 0.1 e Ma = 12.3:   297.555 (320.020 - 297.55 = 30.465 galáxias que não estão em grupos)

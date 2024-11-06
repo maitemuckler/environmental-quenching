@@ -9,8 +9,8 @@ absMag_lim      <- -12
 N_rvir          <-  20    
 Ngals_min_group <-  1      
 
-z_max <- 0.03
-z_min <- 0.01 
+zmax <- 0.04
+zmin <- 0.01
 Mhalo_min_group <- 12.3
 
 ### Definir quantidades cosmológicas ----
@@ -72,9 +72,9 @@ gals_input_file   <- "SDSS_DR18_Legacy_MGS_QSO.csv"
 groups_input_file <- "grupos_lim17.csv"
 
 ### Definir tabelas de saída ----
-output_file        <- paste0(wdassigndata, "assignment2groups_zmax", z_max, "_Rlim", Rlim, "_Ma", Mhalo_min_group, ".csv")
-info_groups_output <- paste0(wdassigndata, "Info/assignment2groups", "_zmax", z_max, "_Rlim", Rlim, "_Ma", Mhalo_min_group, ".infogroups")
-info_gals_output   <- paste0(wdassigndata, "Info/assignment2groups", "_zmax", z_max, "_Rlim", Rlim, "_Ma", Mhalo_min_group, ".infogals")
+output_file        <- paste0(wdassigndata, "assignment2groups_zmax", zmax, "_Rlim", Rlim, "_Ma", Mhalo_min_group, ".csv")
+info_groups_output <- paste0(wdassigndata, "Info/assignment2groups", "_zmax", zmax, "_Rlim", Rlim, "_Ma", Mhalo_min_group, ".infogroups")
+info_gals_output   <- paste0(wdassigndata, "Info/assignment2groups", "_zmax", zmax, "_Rlim", Rlim, "_Ma", Mhalo_min_group, ".infogals")
 
 ### Ler as tabelas de entrada ----
 
@@ -111,8 +111,8 @@ data_groups_i$vvir = sqrt(G * 10**(data_groups_i$logMgroup) * Msun2kg /
 # Seleciona amostra de grupos ----
 xx.xx = data_groups_i$Ngals >= Ngals_min_group & # pega os grupos que tem mais ou igual a Ngals_min_group
   data_groups_i$logMgroup >= Mhalo_min_group &   # pega grupos com massa de halo maior ou igual a Mhalo_min_group
-  data_groups_i$centralZ >= z_min &              # pega grupos com redshift maior ou igual a z_min
-  data_groups_i$centralZ <= z_max                # pega grupos com redshift até z_max
+  data_groups_i$centralZ >= zmin &              # pega grupos com redshift maior ou igual a zmin
+  data_groups_i$centralZ <= zmax                # pega grupos com redshift até zmax
 
 data_groups <- data_groups_i[xx.xx, ] # a partir daqui nunca mais usa o data_groups_i 
 
@@ -121,23 +121,23 @@ groupIDs_select <- groupIDs
 Ngroups         <- length(groupIDs) # quantidade de grupos da amostra selecionada
 
 # Bordas do survey ----
-cDeltaz <- abs(data_groups$centralZ - z_min) * 299792 / (1 + data_groups$centralZ)
-Dz_min  <- cDeltaz * sqrt(DELTA / 2) / data_groups$vvir 
+cDeltaz <- abs(data_groups$centralZ - zmin) * 299792 / (1 + data_groups$centralZ)
+Dzmin  <- cDeltaz * sqrt(DELTA / 2) / data_groups$vvir 
 
-cDeltaz <- abs(data_groups$centralZ - z_max) * 299792 / (1 + data_groups$centralZ)
-Dz_max  <- cDeltaz * sqrt(DELTA / 2) / data_groups$vvir
+cDeltaz <- abs(data_groups$centralZ - zmax) * 299792 / (1 + data_groups$centralZ)
+Dzmax  <- cDeltaz * sqrt(DELTA / 2) / data_groups$vvir
 
-select_groups <- unique(data_groups$groupID[Dz_min >= N_rvir & 
-                                              Dz_max >= N_rvir & 
+select_groups <- unique(data_groups$groupID[Dzmin >= N_rvir & 
+                                              Dzmax >= N_rvir & 
                                               data_groups$groupID %in% groupIDs_select]) # grupos longe das bordas do survey?
 
 groupIDs_select <- groupIDs_select[groupIDs_select %in% select_groups]
 Ngroups_select  <- length(groupIDs_select)
-print(sprintf('Number of groups (after exluding groups close z_min or z_max): %i', Ngroups_select))
+print(sprintf('Number of groups (after exluding groups close zmin or zmax): %i', Ngroups_select))
 
 # Seleciona amostra de galáxias (GALAXIES TO BE ASSIGNED) ----
-xx.xx = data_gals_i$z >= z_min & # pega galáxias com redshift maior ou igual a z_min
-  data_gals_i$z <= z_max # pega galáxias até redshift z_max
+xx.xx = data_gals_i$z >= zmin & # pega galáxias com redshift maior ou igual a zmin
+  data_gals_i$z <= zmax # pega galáxias até redshift zmax
 
 data_gals <- data_gals_i[xx.xx, ] # Nunca mais usa data_gals_i
 ngals     <- nrow(data_gals)
@@ -237,7 +237,7 @@ for(group in groupIDs){
   NnearbyGal <- length(distGal[nearbyGal])
   
   if(NnearbyGal == 0){
-    write(group, file = paste0(wdassigndata, "Info/NoNearbyGal", "_zmax", z_max, "_Rlim", Rlim, "_Ma", Mhalo_min_group, ".csv"), append = T)
+    write(group, file = paste0(wdassigndata, "Info/NoNearbyGal", "_zmax", zmax, "_Rlim", Rlim, "_Ma", Mhalo_min_group, ".csv"), append = T)
   }else{
     # DEFINE DATA.FRAME FOR NEARBY GALAXIES
     data_gals_NRv = data_gals[nearbyGal, ]

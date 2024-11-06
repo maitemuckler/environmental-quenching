@@ -8,9 +8,14 @@ library(caret)
 
 source("~/Work/Research/Astronomy/Projects/environmental-quenching/Scripts/Themes/my_theme.R")
 
-df    <- fread("dados.csv")
-df <- df[-which(df$logvelDisp_e < log10(50)),]
-df <- df[-which(df$logRproj_rvir < -1),]
+zmax       <- 0.03
+input_data <- paste0("inputdata_zmax",zmax,"_Rlim2.5_Ma12.3_flag_good==1_MANGLE_logMstar_min10.5.csv")
+
+df    <- fread(paste0("~/Work/Research/Astronomy/Data/EnvQuenching/inputModel/GSWLC/", input_data))
+df    <- df[-which(df$logvelDisp_e < log10(50)),]
+df$SF <- ifelse(df$SF_GSWLC == "Star-forming", 1, 0)
+df$SF <- as.factor(df$SF)
+df    <- subset(df, df$type == "Satellite")
 
 df$LT <- ifelse(df$TType >= -1.2, 1, 0)
 df$LT <- as.factor(df$LT)
@@ -154,7 +159,7 @@ for (a in 1:(length(vetor_prob)-1)) {
       
       modelos <- rbind(modelos, modelo)
       
-      aux <- quantile(df_painel$logRproj_rvir, probs = seq(0,1, by = 0.1))
+      aux <- quantile(df_painel$logRproj_rvir, probs = seq(0,1, by = 0.2))
       #aux <- seq(min(df$logRproj_rvir), max(df$logRproj_rvir), by = 0.25)
       
       for (i in 1:(length(aux)-1)) {
@@ -215,6 +220,7 @@ for (a in 1:(length(vetor_prob)-1)) {
 colnames(modelos)[13] <- "painel_logvelDisp_e"
 
 levels <- c("50 até 130", "130 até 150","150 até 317")
+levels <- c("50 até 130", "130 até 150","150 até 307")
 
 modelos$painel_logvelDisp_e    <- factor(modelos$painel_logvelDisp_e, levels = levels)
 bins_total$painel_logvelDisp_e <- factor(bins_total$painel_logvelDisp_e, levels = levels)

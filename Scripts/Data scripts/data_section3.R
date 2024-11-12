@@ -9,7 +9,7 @@ wdfigs <- "~/Work/Research/Astronomy/Projects/environmental-quenching/Figures/"
 ## Definir qual tabela assignment ----
 zmax    <- 0.07
 Rlim    <- 2.5
-Ma      <- 12.3
+Ma      <- 14
 catalog <- "GSWLC"
 
 ## Definindo input e output files ----

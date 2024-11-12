@@ -8,17 +8,39 @@ library(caret)
 
 source("~/Work/Research/Astronomy/Projects/environmental-quenching/Scripts/Themes/my_theme.R")
 
-zmax       <- 0.03
+zmax       <- 0.1
+TType_lim  <- 0
+critval    <- 1.96 
+
+wddata     <- "~/Work/Research/Astronomy/Data/environmental-quenching-data/"
 input_data <- paste0("inputdata_zmax",zmax,"_Rlim2.5_Ma12.3_flag_good==1_MANGLE_logMstar_min10.5.csv")
 
-df    <- fread(paste0("~/Work/Research/Astronomy/Data/EnvQuenching/inputModel/GSWLC/", input_data))
-df    <- df[-which(df$logvelDisp_e < log10(50)),]
-df$SF <- ifelse(df$SF_GSWLC == "Star-forming", 1, 0)
-df$SF <- as.factor(df$SF)
+df    <- fread(paste0(wddata, "inputModel/GSWLC/", input_data))
 df    <- subset(df, df$type == "Satellite")
 
-df$LT <- ifelse(df$TType >= -1.2, 1, 0)
+df$SF <- ifelse(df$SF_GSWLC == "Star-forming", 1, 0)
+df$SF <- as.factor(df$SF)
+table(df$SF)
+
+df$LT <- ifelse(df$TType >= TType_lim, 1, 0)
 df$LT <- as.factor(df$LT)
+table(df$LT)
+
+ggplot(df, aes(x = logRproj_rvir, y = logvelDisp_e, color = TType)) + 
+  geom_point(size = 0.5) + 
+  scale_color_distiller(palette = "RdBu", direction = 1,
+                        breaks = seq(-2, 7, by = 2),
+                        limits = c(min(df$TType), max(df$TType)),
+                        name = "T-Type") + 
+  scale_x_continuous(breaks = pretty_breaks(n = 6), name = label_logRproj_rvir) + 
+  scale_y_continuous(breaks = pretty_breaks(n = 6), name = label_logvelDisp_e) + 
+  theme_clean() +
+  theme(axis.text = element_text(size = 18, color = "black"),
+        axis.title = element_text(size = 22, color = "black"),
+        legend.text = element_text(size = 16),
+        legend.title = element_text(size = 14),
+        plot.background = element_rect(color = NA)
+  )
 
 # MODELAGEM ----------------
 fit_fSFG <- glm(SF ~ logvelDisp_e + logRproj_rvir, family = binomial(link = "logit"), data = df)
@@ -35,7 +57,6 @@ importance <- as.data.frame(varImp(fit_fLTG))
 importance <- data.frame(overall = importance$Overall, names = rownames(importance))
 importance[order(importance$overall, decreasing = T),]
 
-
 df$pred_fSFG <- predict(fit_fSFG, df, type = "response")
 df$pred_fLTG <- predict(fit_fLTG, df, type = "response")
 
@@ -45,7 +66,8 @@ optimal_fLTG <- optimalCutoff(df$LT, df$pred_fLTG)[1]
 misClassError(df$SF, df$pred_fSFG, threshold = optimal_fSFG)
 misClassError(df$LT, df$pred_fLTG, threshold = optimal_fLTG)
 
-critval    <- 1.96 
+# -----------------------------------------------------------------------------------------
+
 vetor_prob <- c(0.00, 1/3, 2/3, 1.00)
 vetor_prob <- c(min(df$logvelDisp_e), log10(130), log10(150), max(df$logvelDisp_e))
 

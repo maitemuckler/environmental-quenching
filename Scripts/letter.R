@@ -19,15 +19,16 @@ catalog       <- "GSWLC"
 TType_lim     <- 0
 critval       <- 1.96 
 mass_complete <- "y"
+Ma            <- 12.3
 
 SF_name    <- ifelse(catalog == "GSWLC", "SF_GSWLC", "SF_MPAJHU")
 
 if(mass_complete == "y"){
-  input_data <- paste0("/inputdata_zmax", zmax, "_Rlim2.5_Ma12.3_flag_good==1_MANGLE_logMstar_min10.5.csv")
+  input_data <- paste0("/inputdata_zmax", zmax, "_Rlim2.5_Ma", Ma, "_flag_good==1_MANGLE_logMstar_min10.5.csv")
 }
 
 if(mass_complete == "n"){
-  input_data <- paste0("/inputdata_zmax", zmax, "_Rlim2.5_Ma12.3_flag_good==1_MANGLE.csv")
+  input_data <- paste0("/inputdata_zmax", zmax, "_Rlim2.5_Ma", Ma, "_flag_good==1_MANGLE.csv")
 }
 
 df    <- fread(paste0(wddata, "inputModel/", catalog, input_data))
@@ -73,7 +74,7 @@ data_binned.s <- data.s %>%
 
 # Plotar o gráfico
 ggplot(data_binned.s, aes(x = median_logRproj_rvir, y = median_TType, color = factor(SF))) +
-  geom_smooth(aes(group = SF)) +
+  geom_smooth(aes(group = SF))          +
   facet_grid(. ~ sigma_bin) + 
   labs(x = "logRproj", y = "t-type", color = "Class") +
   scale_color_manual(values = c("red", "blue")) 
@@ -83,60 +84,7 @@ ggplot(data_binned.s, aes(x = median_logRproj_rvir, y = median_TType, color = fa
   labs(x = "logRproj", y = "t-type", color = "Class") +
   scale_color_manual(values = c("red", "blue")) 
 
-# Gráficos 2D:
 
-ggplot(data.s, aes(x = logMstar, y = logvelDisp_e)) + 
-  geom_point(size = 1) + 
-  scale_y_continuous(breaks = pretty_breaks(n = 6), name = label_logvelDisp_e) + 
-  scale_x_continuous(breaks = pretty_breaks(n = 6), name = label_logMstar) + 
-  theme_clean() +
-  theme(axis.text = element_text(size = 18, color = "black"),
-        axis.title = element_text(size = 22, color = "black"),
-        plot.background = element_rect(color = NA)
-  )
-
-ggplot(data.s, aes(x = logMstar, y = logvelDisp_e, color = TType)) + 
-  geom_point(size = 1) + 
-  scale_color_distiller(palette = "RdBu", direction = 1,
-                        breaks = seq(-2, 7, by = 2),
-                        limits = c(min(data.s$TType),max(data.s$TType)),
-                        name = "T-Type") + 
-  scale_y_continuous(breaks = pretty_breaks(n = 6), name = label_logvelDisp_e) + 
-  scale_x_continuous(breaks = pretty_breaks(n = 6), name = label_logMstar) + 
-  theme_clean() +
-  theme(axis.text = element_text(size = 18, color = "black"),
-        axis.title = element_text(size = 22, color = "black"),
-        legend.text = element_text(size = 16),
-        legend.title = element_text(size = 14),
-        plot.background = element_rect(color = NA)
-  )
-
-ggplot(data.s, aes(x = logMstar, y = logvelDisp_e, color = B_T_r)) + 
-  geom_point(size = 1) + 
-  scale_color_distiller(palette = "RdBu", direction = -1,
-                        limits = c(min(data.s$B_T_r),max(data.s$B_T_r)),
-                        name = "B/T") + 
-  scale_y_continuous(breaks = pretty_breaks(n = 6), name = label_logvelDisp_e) + 
-  scale_x_continuous(breaks = pretty_breaks(n = 6), name = label_logMstar) + 
-  theme_clean() +
-  theme(axis.text = element_text(size = 18, color = "black"),
-        axis.title = element_text(size = 22, color = "black"),
-        legend.text = element_text(size = 16),
-        legend.title = element_text(size = 14),
-        plot.background = element_rect(color = NA)
-  )
-
-
-ggplot(data.s, aes(x = logvelDisp_e, y = TType, color = logMstar)) + 
-  geom_point(size = 1) + 
-  scale_color_distiller(palette = "Reds") + 
-  theme_clean() +
-  theme(axis.text = element_text(size = 18, color = "black"),
-        axis.title = element_text(size = 22, color = "black"),
-        legend.text = element_text(size = 16),
-        legend.title = element_text(size = 14),
-        plot.background = element_rect(color = NA)
-  )
 
 # Modelos ------------------------------------------------------------------------------------------------
 

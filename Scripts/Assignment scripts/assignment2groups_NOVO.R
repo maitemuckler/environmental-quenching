@@ -9,9 +9,9 @@ absMag_lim      <- -12
 N_rvir          <-  20    
 Ngals_min_group <-  1      
 
-zmax <- 0.04
+zmax <- 0.07
 zmin <- 0.01
-Mhalo_min_group <- 12.3
+Mhalo_min_group <- 14
 
 ### Definir quantidades cosmológicas ----
 DELTA <- 100

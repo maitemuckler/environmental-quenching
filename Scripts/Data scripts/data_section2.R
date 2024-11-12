@@ -10,7 +10,7 @@ wdfigs <- "~/Work/Research/Astronomy/Projects/environmental-quenching/Figures/"
 ## Definir qual tabela assignment ----
 zmax    <- 0.07
 Rlim    <- 2.5
-Ma      <- 12.3
+Ma      <- 14
 
 ## Definindo input e output files ----
 input_clean_file  <- "clean_SDSS_DR18_Legacy_MGS_QSO_localDensity+GSWLC+Simard11+DS18.csv" 

@@ -5,6 +5,7 @@ library(binom)
 library(ggplot2)
 library(InformationValue)
 library(caret)
+library(scales)
 
 source("~/Work/Research/Astronomy/Projects/environmental-quenching/Scripts/Themes/my_theme.R")
 
@@ -48,6 +49,17 @@ fit_fLTG <- glm(LT ~ logvelDisp_e + logRproj_rvir, family = binomial(link = "log
 
 summary(fit_fSFG)
 summary(fit_fLTG)
+
+
+
+summary(fit_fSFG)
+
+coeficientes <- coef(fit_fSFG)
+erro_padrao <- sqrt(diag(vcov(fit_fSFG)))  # Erro padrão calculado a partir da matriz de variância-covariância
+
+# Calcule o z-score manualmente
+z_scores <- coeficientes / erro_padrao
+
 
 importance <- as.data.frame(varImp(fit_fSFG))
 importance <- data.frame(overall = importance$Overall, names = rownames(importance))

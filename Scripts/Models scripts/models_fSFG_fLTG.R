@@ -6,6 +6,7 @@ library(ggplot2)
 library(InformationValue)
 library(caret)
 library(scales)
+library(ggthemes)
 
 source("~/Work/Research/Astronomy/Projects/environmental-quenching/Scripts/Themes/my_theme.R")
 
@@ -50,15 +51,18 @@ fit_fLTG <- glm(LT ~ logvelDisp_e + logRproj_rvir, family = binomial(link = "log
 summary(fit_fSFG)
 summary(fit_fLTG)
 
-
-
-summary(fit_fSFG)
-
 coeficientes <- coef(fit_fSFG)
 erro_padrao <- sqrt(diag(vcov(fit_fSFG)))  # Erro padrão calculado a partir da matriz de variância-covariância
 
 # Calcule o z-score manualmente
 z_scores <- coeficientes / erro_padrao
+
+# Calcule o valor-p para um teste bicaudal
+p_valor <- 2 * (1 - pnorm(abs(z_scores)))
+
+# Exiba o valor-p
+print(p_valor)
+
 
 
 importance <- as.data.frame(varImp(fit_fSFG))
